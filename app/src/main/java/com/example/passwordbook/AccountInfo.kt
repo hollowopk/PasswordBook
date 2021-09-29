@@ -59,20 +59,29 @@ class AccountInfo : AppCompatActivity() {
             else {
                 val newAccount = Account(accountText, usernameText,
                     passwordText, remarkText, System.currentTimeMillis())
-                if (!isUpdate) {
-                    val newId = accountDao.insertAccount(newAccount)
-                    newAccount.id = newId
-                }
-                else {
-                    accountDao.updateAccountById(id, accountText, usernameText,
-                        passwordText, remarkText, System.currentTimeMillis())
-                }
                 val intent = Intent()
                 intent.putExtra("isUpdate", isUpdate)
                 intent.putExtra("accountId", id)
-                intent.putExtra("newAccount", newAccount)
-                setResult(RESULT_OK,intent)
-                finish()
+                if (!isUpdate) {
+                    thread {
+                        val newId = accountDao.insertAccount(newAccount)
+                        newAccount.id = newId
+                        intent.putExtra("newAccount", newAccount)
+                        setResult(RESULT_OK,intent)
+                        finish()
+                    }
+                }
+                else {
+                    thread {
+                        accountDao.updateAccountById(
+                            id, accountText, usernameText,
+                            passwordText, remarkText, System.currentTimeMillis()
+                        )
+                        intent.putExtra("newAccount", newAccount)
+                        setResult(RESULT_OK, intent)
+                        finish()
+                    }
+                }
             }
         }
 

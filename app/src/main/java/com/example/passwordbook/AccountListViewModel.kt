@@ -21,9 +21,11 @@ class AccountListViewModel(private val accountDao: AccountDao) : ViewModel() {
     fun getLiveData() = accountListLiveData
 
     private fun loadAllAccount() {
-        val accountList = accountDao.loadAllAccount()
-        for (account in accountList) {
-            accountListLiveData.value?.add(account)
+        thread {
+            val accountList = accountDao.loadAllAccount()
+            for (account in accountList) {
+                accountListLiveData.value?.add(account)
+            }
         }
     }
 
@@ -50,7 +52,9 @@ class AccountListViewModel(private val accountDao: AccountDao) : ViewModel() {
     }
 
     fun deleteById(id: Long) {
-        accountDao.deleteAccountById(id)
+        thread {
+            accountDao.deleteAccountById(id)
+        }
         val list = accountListLiveData.value
         val newList = ArrayList<Account>()
         if (list != null) {
