@@ -22,10 +22,12 @@ class AccountListViewModel(private val accountDao: AccountDao) : ViewModel() {
 
     private fun loadAllAccount() {
         thread {
+            val list = accountListLiveData.value!!
             val accountList = accountDao.loadAllAccount()
             for (account in accountList) {
-                accountListLiveData.value?.add(account)
+                list.add(account)
             }
+            accountListLiveData.postValue(list)
         }
     }
 
