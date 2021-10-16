@@ -29,7 +29,7 @@ class AccountList : AppCompatActivity() {
 
         val recyclerView = binding.recyclerView
         val addAccountButton = binding.addAccountButton
-        val changePwdBtn = binding.changePasswordButton
+        val settingBtn = binding.settingBtn
         val accountLiveData = viewModel.getLiveData()
 
         accountLiveData.observe(this, Observer { res ->
@@ -63,24 +63,26 @@ class AccountList : AppCompatActivity() {
 
         }
 
-        changePwdBtn.setOnClickListener {
-            val intent = Intent(this, ChangePasswordActivity::class.java)
+        settingBtn.setOnClickListener {
+            val intent = Intent(this, SettingActivity::class.java)
             startActivity(intent)
         }
     }
 
     override fun onActivityResult(reqCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (reqCode == requestCode) {
-            if (data != null) {
-                val isUpdate = data.getBooleanExtra("isUpdate", false)
-                val accountId = data.getLongExtra("accountId", -1)
-                val account = data.getSerializableExtra("newAccount") as Account
-                if (isUpdate && accountId >= 0) {
-                    viewModel.updateListById(accountId,account)
-                }
-                else {
-                    viewModel.addAccount(account)
+        when (reqCode) {
+            requestCode -> {
+                if (data != null) {
+                    val isUpdate = data.getBooleanExtra("isUpdate", false)
+                    val accountId = data.getLongExtra("accountId", -1)
+                    val account = data.getSerializableExtra("newAccount") as Account
+                    if (isUpdate && accountId >= 0) {
+                        viewModel.updateListById(accountId,account)
+                    }
+                    else {
+                        viewModel.addAccount(account)
+                    }
                 }
             }
         }

@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PasswordBook">
         <activity
+            android:name=".SettingActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChangePasswordActivity"
             android:exported="true" />
         <activity
